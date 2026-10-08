@@ -56,3 +56,15 @@ window.LernovaSync={
 };
 if(window.LernovaAuth&&!window.LernovaAuth.client)window.LernovaAuth.init();
 document.addEventListener('DOMContentLoaded',()=>{if(window.LernovaAuth?.client)LernovaSync.load().catch(error=>console.warn('Lernova sync unavailable:',error.message))});
+
+
+// Sync progress saved on this device when the connection returns or the app opens online.
+async function syncLocalProgressWhenOnline(){
+ if(!navigator.onLine||!window.LernovaAuth?.client)return;
+ try{
+  if(!LernovaSync.ready)await LernovaSync.load();
+  await LernovaSync.mergeLocal();
+ }catch(error){console.warn('Lernova local progress sync pending:',error.message)}
+}
+window.addEventListener('online',syncLocalProgressWhenOnline);
+document.addEventListener('DOMContentLoaded',syncLocalProgressWhenOnline);
