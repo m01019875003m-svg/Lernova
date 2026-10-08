@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="54" y1="28" x2="458" y2="496" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2935a5"/>
+      <stop offset=".55" stop-color="#4d55d5"/>
+      <stop offset="1" stop-color="#7165ed"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="matrix(277 0 0 255 251 132)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9bdcff" stop-opacity=".34"/>
+      <stop offset="1" stop-color="#9bdcff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="leftPage" x1="124" y1="201" x2="248" y2="392" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff"/><stop offset="1" stop-color="#e9efff"/>
+    </linearGradient>
+    <linearGradient id="rightPage" x1="264" y1="207" x2="393" y2="392" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f9fbff"/><stop offset="1" stop-color="#dce8ff"/>
+    </linearGradient>
+    <filter id="shadow" x="70" y="144" width="372" height="310" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="15"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="116" fill="url(#glow)"/>
+  <circle cx="256" cy="256" r="214" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="2"/>
+  <ellipse cx="256" cy="398" rx="158" ry="25" fill="#171f75" fill-opacity=".32" filter="url(#shadow)"/>
+  <path d="M112 207c47-26 91-28 142 8v173c-53-34-96-35-142-7V207Z" fill="url(#leftPage)"/>
+  <path d="M400 207c-47-26-91-28-142 8v173c53-34 96-35 142-7V207Z" fill="url(#rightPage)"/>
+  <path d="M112 207c46-25 91-28 142 8v173c-52-33-96-35-142-7V207Zm288 0c-46-25-91-28-142 8v173c52-33 96-35 142-7V207Z" fill="none" stroke="#fff" stroke-linejoin="round" stroke-width="10"/>
+  <path d="M256 216v172" stroke="#8894df" stroke-linecap="round" stroke-width="8"/>
+  <path d="M144 251c31-13 58-12 83-1M144 283c31-13 58-12 83-1M144 315c31-13 58-12 83-1" stroke="#9aa7db" stroke-linecap="round" stroke-width="8"/>
+  <path d="M285 250c28-13 54-13 83 0M285 282c28-13 54-13 83 0M285 314c28-13 54-13 83 0" stroke="#91a3dd" stroke-linecap="round" stroke-width="8"/>
+  <path d="M335 107c0-22 18-40 40-40h10c22 0 40 18 40 40v16c0 22-18 40-40 40h-12l-23 18v-25c-9-8-15-20-15-33v-16Z" fill="#ffcf70"/>
+  <text x="375" y="130" text-anchor="middle" font-family="Arial,sans-serif" font-size="42" font-weight="800" fill="#353a8d">ä</text>
+  <path d="m164 142 7 16 17 2-13 11 4 17-15-9-15 9 4-17-13-11 17-2 7-16Z" fill="#a4e3ff"/>
+</svg>

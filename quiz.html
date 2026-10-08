@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#5b5bd6"><link rel="stylesheet" href="../css/main.css"><title>Lernova — الاختبارات</title></head>
+<body>
+<header class="topbar"><div class="container nav"><a class="brand" href="../index.html">Ler<span>nova</span></a><a class="btn ghost" href="lessons.html">الفصول</a></div></header>
+<main class="container">
+  <section class="hero"><p class="eyebrow">Netzwerk neu A1</p><h1>🎯 اختار تدريبك</h1><p>حدد الفصل ونوع الأسئلة وعددها، أو اختر كل الكلمات المتاحة في الفصل.</p></section>
+  <form id="quizSetup" class="card quiz-settings">
+    <div class="toolbar">
+      <label class="field-label">الفصل<select class="field" id="quizChapter"></select></label>
+      <label class="field-label">نوع الأسئلة<select class="field" id="quizMode">
+        <option value="mixed">مزيج متنوع</option><option value="de-ar">ألماني ← عربي</option><option value="ar-de">عربي ← ألماني</option><option value="typing">كتابة الكلمة</option><option value="article">Artikel</option><option value="plural">الجمع</option><option value="listen">استماع واختيار المعنى</option><option value="grammar">قواعد الفصل</option><option value="exam">امتحان شامل</option>
+      </select></label>
+      <label class="field-label" id="countLabel">عدد الأسئلة<input class="field" type="number" id="questionCount" min="1" value="10" inputmode="numeric"></label>
+    </div>
+    <label class="check-row"><input type="checkbox" id="allWords"> كل الأسئلة المتاحة حسب الفصل والنوع</label>
+    <p class="muted" id="availableCount" aria-live="polite"></p>
+    <button class="btn primary" id="startQuiz" type="submit">ابدأ الاختبار</button>
+  </form>
+  <div id="quizApp" class="quiz-box" aria-live="polite"><div class="empty-state">اختار إعداداتك واضغط «ابدأ الاختبار».</div></div>
+</main>
+<footer class="footer">Lernova · creating by mohamed Ibrahim khafagy</footer>
+<script src="../data/a1.js"></script><script src="../data/grammar-a1.js"></script><script src="../js/storage.js"></script><script src="../js/core.js"></script><script src="../js/quiz.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/auth.js"></script><script src="../js/sync.js"></script><script src="../js/language.js"></script>
+
+<script src="../js/profile-ui.js"></script>
+</body></html>

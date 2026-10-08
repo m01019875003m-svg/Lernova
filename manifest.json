@@ -1,0 +1,19 @@
+{
+  "name": "Lernova — تعلم الألمانية A1",
+  "short_name": "Lernova",
+  "description": "تعلّم Netzwerk neu A1 مع الجمل والمراجعة والاختبارات.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "dir": "rtl",
+  "lang": "ar",
+  "theme_color": "#3843b5",
+  "background_color": "#f6f7fb",
+  "icons": [
+    { "src": "assets/lernova-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/lernova-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/lernova-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/lernova-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

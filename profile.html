@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#5b5bd6"><title>Lernova — ملفي الشخصي</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <header class="topbar"><div class="container nav"><a class="brand" href="../index.html">Ler<span>nova</span></a><div class="nav-actions"><a class="btn ghost" href="progress.html">📊 تقدمي</a></div></div></header>
+  <main class="container profile-page">
+    <section class="profile-hero card">
+      <div class="profile-avatar-wrap">
+        <img id="avatarPreview" class="profile-avatar" alt="صورتك الشخصية" hidden>
+        <div id="avatarFallback" class="profile-avatar profile-avatar-fallback" aria-hidden="true">👤</div>
+        <label class="avatar-edit" for="avatarInput" aria-label="اختيار صورة شخصية">📷</label>
+        <input id="avatarInput" type="file" accept="image/*" hidden>
+      </div>
+      <div class="profile-hero-copy"><span class="profile-kicker">مساحة Lernova الخاصة بك</span><h1 id="profileHeading">ملفك الشخصي</h1><p class="muted">خصص حسابك وتابع رحلتك في تعلّم الألمانية.</p></div>
+      <div class="profile-badge">🇩🇪 <span>Netzwerk A1</span></div>
+    </section>
+
+    <section class="profile-layout">
+      <div class="card profile-panel">
+        <div class="section-head"><div><h2>معلومات الحساب</h2><p class="muted">اسمك وصورتك يظهران في الشريط العلوي بكل الصفحات.</p></div><span class="profile-status"><i></i> حسابك</span></div>
+        <form id="profileForm" class="profile-form">
+          <label for="username">اسم المستخدم</label>
+          <input class="field" id="username" maxlength="40" autocomplete="nickname" placeholder="اكتب الاسم الذي تريد ظهوره" required>
+          <div class="profile-actions"><button class="btn primary" id="saveProfile">حفظ التغييرات</button><button class="btn ghost" type="button" id="removeAvatar">إزالة الصورة</button></div>
+        </form>
+        <p id="msg" class="profile-message" role="status" aria-live="polite"></p>
+      </div>
+      <aside class="card profile-tip"><span class="tip-icon">✨</span><h3>ملفك جاهز للتعلم</h3><p>اختر صورة واضحة واكتب الاسم الذي تحب أن تراه في التطبيق. الصورة مدعومة بصيغ JPG وPNG وWebP حتى 5 ميجابايت.</p><a class="btn ghost" href="progress.html">عرض تقدمي ←</a></aside>
+    </section>
+    <section class="profile-footer-actions"><button id="logout" class="btn ghost">تسجيل الخروج</button><a class="muted" href="../index.html">العودة للرئيسية</a></section>
+  </main>
+  <footer class="footer">Lernova · creating by mohamed Ibrahim khafagy</footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/config.js"></script><script src="../js/auth.js"></script><script src="../js/sync.js"></script>
+  <script>
+  (() => {
+    const client = LernovaAuth.init(), input = document.getElementById('username'), fileInput = document.getElementById('avatarInput');
+    const preview = document.getElementById('avatarPreview'), fallback = document.getElementById('avatarFallback'), msg = document.getElementById('msg');
+    let user = null, avatarUrl = '', selectedFile = null;
+    const showAvatar = url => { avatarUrl = url || ''; if (url) { preview.src = url; preview.hidden = false; fallback.hidden = true; preview.onerror = () => { preview.hidden = true; fallback.hidden = false; }; } else { preview.removeAttribute('src'); preview.hidden = true; fallback.hidden = false; } };
+    const say = (text, error = false) => { msg.textContent = text; msg.classList.toggle('is-error', error); };
+    async function load() {
+      if (!client) { say('تعذر الاتصال بإعدادات الحساب. راجع js/config.js.', true); return; }
+      try {
+        const { data, error } = await client.auth.getUser(); if (error) throw error;
+        user = data.user; if (!user) { location.href = 'login.html'; return; }
+        let profile = { username: user.user_metadata?.username || '', avatar_url: user.user_metadata?.avatar_url || '' };
+        const { data: row, error: profileError } = await client.from('profiles').select('username,avatar_url').eq('id', user.id).maybeSingle();
+        if (!profileError && row) profile = { username: row.username || profile.username, avatar_url: row.avatar_url || profile.avatar_url };
+        input.value = profile.username; showAvatar(profile.avatar_url);
+        document.getElementById('profileHeading').textContent = profile.username ? `أهلًا ${profile.username}` : 'ملفك الشخصي';
+        localStorage.setItem('lernovaProfile', JSON.stringify(profile));
+        window.dispatchEvent(new CustomEvent('lernova:profile-updated', { detail: profile }));
+        await window.LernovaSync?.load?.().catch(() => {});
+      } catch (error) { say(error.message || 'لم نتمكن من تحميل الملف الشخصي.', true); }
+    }
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0]; if (!file) return;
+      if (!file.type.startsWith('image/')) { say('اختار ملف صورة صالحًا.', true); fileInput.value = ''; return; }
+      if (file.size > 5 * 1024 * 1024) { say('حجم الصورة أكبر من 5 ميجابايت.', true); fileInput.value = ''; return; }
+      selectedFile = file; showAvatar(URL.createObjectURL(file)); say('الصورة جاهزة. اضغط حفظ التغييرات لتثبيتها.');
+    });
+    document.getElementById('profileForm').addEventListener('submit', async event => {
+      event.preventDefault(); if (!client || !user) return;
+      const button = document.getElementById('saveProfile'); button.disabled = true; button.textContent = 'جارٍ الحفظ…';
+      try {
+        let finalAvatar = avatarUrl;
+        if (selectedFile) {
+          const ext = (selectedFile.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+          const objectPath = `${user.id}/avatar-${Date.now()}.${ext}`;
+          const { error: uploadError } = await client.storage.from('avatars').upload(objectPath, selectedFile, { upsert: true, contentType: selectedFile.type, cacheControl: '3600' });
+          if (uploadError) throw uploadError;
+          finalAvatar = client.storage.from('avatars').getPublicUrl(objectPath).data.publicUrl;
+        }
+        const username = input.value.trim();
+        const { error: authError } = await client.auth.updateUser({ data: { username, avatar_url: finalAvatar || null } }); if (authError) throw authError;
+        const { error: rowError } = await client.from('profiles').upsert({ id: user.id, username, avatar_url: finalAvatar || null, updated_at: new Date().toISOString() }); if (rowError) throw rowError;
+        avatarUrl = finalAvatar; selectedFile = null; showAvatar(finalAvatar);
+        const record = { username, avatar_url: finalAvatar || '' }; localStorage.setItem('lernovaProfile', JSON.stringify(record));
+        document.getElementById('profileHeading').textContent = `أهلًا ${username}`;
+        window.dispatchEvent(new CustomEvent('lernova:profile-updated', { detail: record }));
+        say('تم حفظ الاسم والصورة في حسابك ✓');
+      } catch (error) { say(error.message || 'تعذر حفظ الملف الشخصي.', true); }
+      finally { button.disabled = false; button.textContent = 'حفظ التغييرات'; }
+    });
+    document.getElementById('removeAvatar').addEventListener('click', () => { selectedFile = null; fileInput.value = ''; showAvatar(''); say('اضغط حفظ التغييرات لتأكيد إزالة الصورة.'); });
+    document.getElementById('logout').addEventListener('click', async () => { if (client) await LernovaAuth.signOut(); location.href = '../index.html'; });
+    load();
+  })();
+  </script>
+  <script src="../js/profile-ui.js"></script><script src="../js/language.js"></script>
+</body>
+</html>
