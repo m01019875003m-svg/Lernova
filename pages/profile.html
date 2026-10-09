@@ -19,6 +19,7 @@
       <div class="profile-badge">🇩🇪 <span>Netzwerk A1</span></div>
     </section>
 
+
     <section class="profile-layout">
       <div class="card profile-panel">
         <div class="section-head"><div><h2>معلومات الحساب</h2><p class="muted">اسمك وصورتك يظهران في الشريط العلوي بكل الصفحات.</p></div><span class="profile-status"><i></i> حسابك</span></div>
@@ -34,8 +35,9 @@
     <section class="card profile-panel extras-panel">
       <div class="section-head"><div><h2>تقدّمك والنسخة الاحتياطية</h2><p class="muted">هدف يومي ونسخة تحفظ تقدمك على هذا الجهاز.</p></div></div>
       <p id="syncStatus" class="sync-status" role="status" aria-live="polite"></p>
-      <label class="field-label" for="dailyGoal">هدف الكلمات اليومي</label>
-      <select class="field" id="dailyGoal"><option value="5">٥ كلمات</option><option value="10">١٠ كلمات</option><option value="15">١٥ كلمة</option><option value="20">٢٠ كلمة</option></select>
+      <label class="field-label" for="dailyGoal">هدف الكلمات اليومي (من ٣٠ إلى ٥٠٠)</label>
+      <input class="field" id="dailyGoal" type="number" min="30" max="500" step="1" value="30" inputmode="numeric">
+      <p class="muted small-note">اختار أي هدف من ٣٠ كلمة لحد ٥٠٠ كلمة يوميًا.</p>
       <p id="dailyGoalProgress" class="goal-progress" role="progressbar" aria-valuemin="0"></p>
       <div class="profile-actions"><button type="button" class="btn primary" id="exportBackup">تنزيل نسخة احتياطية</button><label class="btn ghost" for="importBackup">استيراد نسخة</label><input id="importBackup" type="file" accept="application/json,.json" hidden></div>
       <hr class="soft-rule">
@@ -59,52 +61,3 @@
     async function load() {
       if (!client) { say('تعذر الاتصال بإعدادات الحساب. راجع js/config.js.', true); return; }
       try {
-        const { data, error } = await client.auth.getUser(); if (error) throw error;
-        user = data.user; if (!user) { location.href = 'login.html'; return; }
-        let profile = { username: user.user_metadata?.username || '', avatar_url: user.user_metadata?.avatar_url || '' };
-        const { data: row, error: profileError } = await client.from('profiles').select('username,avatar_url').eq('id', user.id).maybeSingle();
-        if (!profileError && row) profile = { username: row.username || profile.username, avatar_url: row.avatar_url || profile.avatar_url };
-        input.value = profile.username; showAvatar(profile.avatar_url);
-        document.getElementById('profileHeading').textContent = profile.username ? `أهلًا ${profile.username}` : 'ملفك الشخصي';
-        localStorage.setItem('lernovaProfile', JSON.stringify(profile));
-        window.dispatchEvent(new CustomEvent('lernova:profile-updated', { detail: profile }));
-        await window.LernovaSync?.load?.().catch(() => {});
-      } catch (error) { say(error.message || 'لم نتمكن من تحميل الملف الشخصي.', true); }
-    }
-    fileInput.addEventListener('change', () => {
-      const file = fileInput.files?.[0]; if (!file) return;
-      if (!file.type.startsWith('image/')) { say('اختار ملف صورة صالحًا.', true); fileInput.value = ''; return; }
-      if (file.size > 5 * 1024 * 1024) { say('حجم الصورة أكبر من 5 ميجابايت.', true); fileInput.value = ''; return; }
-      selectedFile = file; showAvatar(URL.createObjectURL(file)); say('الصورة جاهزة. اضغط حفظ التغييرات لتثبيتها.');
-    });
-    document.getElementById('profileForm').addEventListener('submit', async event => {
-      event.preventDefault(); if (!client || !user) return;
-      const button = document.getElementById('saveProfile'); button.disabled = true; button.textContent = 'جارٍ الحفظ…';
-      try {
-        let finalAvatar = avatarUrl;
-        if (selectedFile) {
-          const ext = (selectedFile.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
-          const objectPath = `${user.id}/avatar-${Date.now()}.${ext}`;
-          const { error: uploadError } = await client.storage.from('avatars').upload(objectPath, selectedFile, { upsert: true, contentType: selectedFile.type, cacheControl: '3600' });
-          if (uploadError) throw uploadError;
-          finalAvatar = client.storage.from('avatars').getPublicUrl(objectPath).data.publicUrl;
-        }
-        const username = input.value.trim();
-        const { error: authError } = await client.auth.updateUser({ data: { username, avatar_url: finalAvatar || null } }); if (authError) throw authError;
-        const { error: rowError } = await client.from('profiles').upsert({ id: user.id, username, avatar_url: finalAvatar || null, updated_at: new Date().toISOString() }); if (rowError) throw rowError;
-        avatarUrl = finalAvatar; selectedFile = null; showAvatar(finalAvatar);
-        const record = { username, avatar_url: finalAvatar || '' }; localStorage.setItem('lernovaProfile', JSON.stringify(record));
-        document.getElementById('profileHeading').textContent = `أهلًا ${username}`;
-        window.dispatchEvent(new CustomEvent('lernova:profile-updated', { detail: record }));
-        say('تم حفظ الاسم والصورة في حسابك ✓');
-      } catch (error) { say(error.message || 'تعذر حفظ الملف الشخصي.', true); }
-      finally { button.disabled = false; button.textContent = 'حفظ التغييرات'; }
-    });
-    document.getElementById('removeAvatar').addEventListener('click', () => { selectedFile = null; fileInput.value = ''; showAvatar(''); say('اضغط حفظ التغييرات لتأكيد إزالة الصورة.'); });
-    document.getElementById('logout').addEventListener('click', async () => { if (client) await LernovaAuth.signOut(); location.href = '../index.html'; });
-    load();
-  })();
-  </script>
-  <script src="../js/profile-ui.js"></script><script src="../js/language.js"></script><script src="../js/tools.js/tools.js"></script>
-</body>
-</html>
