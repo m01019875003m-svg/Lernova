@@ -3,8 +3,8 @@
   if (!store) return;
   const safeKeys = () => Object.keys(localStorage).filter(key => key.startsWith('lernova_'));
   const todayWords = () => store.get('dailyStudyDate', '') === store.today() ? store.get('dailyWords', []) : [];
-  const clampGoal = value => Math.max(30, Math.min(500, Math.round(Number(value) || 30)));
-  if (Number(store.get('dailyGoal', 30)) !== clampGoal(store.get('dailyGoal', 30))) store.set('dailyGoal', clampGoal(store.get('dailyGoal', 30)));
+  const clampGoal = value => Math.max(5, Math.min(1943, Math.round(Number(value) || 5)));
+  if (Number(store.get('dailyGoal', 5)) !== clampGoal(store.get('dailyGoal', 5))) store.set('dailyGoal', clampGoal(store.get('dailyGoal', 5)));
   const originalMarkKnown = store.markKnown.bind(store);
   store.markKnown = function(key) {
     const isNew = !this.known().includes(key);
@@ -49,7 +49,7 @@
 
     const updateGoal = () => {
       if (!goal || !progress) return;
-      const target = clampGoal(store.get('dailyGoal', 30));
+      const target = clampGoal(store.get('dailyGoal', 5));
       const count = new Set(Array.isArray(todayWords()) ? todayWords() : []).size;
       const percent = Math.min(100, Math.round(count / target * 100));
       progress.textContent = count >= target ? 'أنجزت هدف اليوم: ' + count + ' من ' + target + ' كلمة 🎉' : 'أنجزت ' + count + ' من ' + target + ' كلمة (' + percent + '%)';
@@ -57,9 +57,16 @@
       progress.setAttribute('aria-valuemax', String(target));
     };
     if (goal) {
-      goal.value = String(clampGoal(store.get('dailyGoal', 30)));
+      goal.value = String(clampGoal(store.get('dailyGoal', 5)));
       goal.addEventListener('change', () => { const target = clampGoal(goal.value); goal.value = String(target); store.set('dailyGoal', target); updateGoal(); });
-      window.addEventListener('lernova:daily-goal-updated', updateGoal);
+            document.querySelectorAll('.goal-preset').forEach(button => {
+        button.addEventListener('click', () => {
+          if (!goal) return;
+          goal.value = button.dataset.goal;
+          goal.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+            });
+window.addEventListener('lernova:daily-goal-updated', updateGoal);
       updateGoal();
     }
 
