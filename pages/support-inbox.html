@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#5b5bd6">
+  <title>Lernova — صندوق رسائل الدعم</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .inbox-page{padding-block:24px 44px}.inbox-hero{padding:clamp(22px,5vw,34px);margin-block:18px;background:radial-gradient(circle at 95% 8%,color-mix(in srgb,var(--primary) 14%,var(--surface)),var(--surface) 48%)}.inbox-hero h1{margin:4px 0;font-size:clamp(1.7rem,5vw,2.35rem)}.inbox-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px}.inbox-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-block:16px}.inbox-stat{padding:18px}.inbox-stat strong{display:block;font-size:1.7rem;color:var(--primary)}.inbox-status-message{min-height:1.6em;margin:12px 0;font-weight:700;color:var(--good)}.inbox-status-message.is-error{color:var(--bad)}.inbox-list{display:grid;gap:12px}.inbox-message{padding:20px}.inbox-message-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.inbox-message-head h2{margin:0;font-size:1.1rem}.inbox-message-body{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8}.inbox-message-details{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:.85rem}.inbox-status{display:inline-flex;padding:5px 10px;border-radius:999px;font-size:.78rem;font-weight:750;background:color-mix(in srgb,var(--primary) 9%,var(--surface));color:var(--primary)}.inbox-status-new{background:color-mix(in srgb,var(--warn) 13%,var(--surface));color:var(--warn)}.inbox-status-resolved{background:color-mix(in srgb,var(--good) 10%,var(--surface));color:var(--good)}.inbox-action{margin-top:14px}.inbox-empty{padding:26px;text-align:center}.inbox-login-link{margin-top:14px}@media(max-width:600px){.inbox-page{padding-top:14px}.inbox-hero{padding:20px;border-radius:18px}.inbox-toolbar{align-items:stretch;flex-direction:column}.inbox-toolbar .btn{width:100%}.inbox-stats{gap:10px}.inbox-stat{padding:15px}.inbox-message{padding:16px}.inbox-message-head{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="../index.html">Ler<span>nova</span></a>
+      <div class="nav-actions"><a class="btn ghost" href="./support.html">الدعم والشكاوى</a></div>
+    </div>
+  </header>
+
+  <main class="container inbox-page">
+    <section class="card inbox-hero">
+      <span class="profile-kicker">مساحة خاصة بمسؤول Lernova</span>
+      <div class="inbox-toolbar">
+        <div>
+          <h1>صندوق رسائل الدعم</h1>
+          <p class="muted">راجع الرسائل الجديدة وتابع حالتها. الوصول يتطلب حسابًا مصرحًا به.</p>
+        </div>
+        <button class="btn primary" id="refreshInbox" type="button">تحديث الرسائل</button>
+      </div>
+    </section>
+
+    <section class="inbox-stats" aria-label="ملخص الرسائل">
+      <article class="card inbox-stat"><span class="muted">كل الرسائل</span><strong id="inboxCount">—</strong></article>
+      <article class="card inbox-stat"><span class="muted">رسائل جديدة</span><strong id="inboxNewCount">—</strong></article>
+    </section>
+
+    <p id="inboxStatus" class="inbox-status-message" role="status" aria-live="polite">جاري تجهيز صندوق الدعم…</p>
+    <section id="inboxEmpty" class="card inbox-empty" hidden>
+      <h2>لا توجد رسائل بعد</h2>
+      <p class="muted">ستظهر هنا الرسائل التي أُرسلت من صفحة الدعم.</p>
+      <a class="btn ghost" href="./support.html">فتح صفحة الدعم</a>
+    </section>
+    <section id="inboxList" class="inbox-list" aria-label="رسائل الدعم"></section>
+  </main>
+
+  <footer class="footer">Lernova · صندوق الدعم الخاص</footer>
+  <script src="../js/language.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/support-inbox.js"></script>
+</body>
+</html>
