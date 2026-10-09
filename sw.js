@@ -1,5 +1,5 @@
 /* Lernova A1 offline support */
-const CACHE = "lernova-a1-v15";
+const CACHE = "lernova-a1-v16";
 const ASSETS = [
   "./", "./index.html", "./manifest.json",
   "./assets/lernova-icon.svg", "./assets/lernova-icon-192.png", "./assets/lernova-icon-512.png",
@@ -35,4 +35,3 @@ self.addEventListener("activate", event => {
     await self.clients.claim();
   })());
 });
-
