@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  if($('xp'))$('xp').textContent=LernovaStore.xp();
  if($('known'))$('known').textContent=LernovaStore.known().length;
  if($('review'))$('review').textContent=LernovaStore.reviewDue().length;
+ if($('mistakes'))$('mistakes').textContent=LernovaStore.mistakes().length;
  if($('streak'))$('streak').textContent=LernovaStore.get('streak',0);
  if($('daily'))$('daily').textContent=LernovaStore.get('dailyCount',0);
  const [name]=LERNOVA.level(LernovaStore.xp());if($('level'))$('level').textContent=name;
@@ -18,5 +19,6 @@ document.addEventListener('DOMContentLoaded',()=>{
  if($('totalWords'))$('totalWords').textContent=total.toLocaleString('ar-EG');
  if($('courseProgress'))$('courseProgress').textContent=total?`${Math.min(100,Math.round(knownCount/total*100))}%`:'0%';
  const query=new URLSearchParams(location.search).get('chapter');if(query&&$('chapterSelect'))$('chapterSelect').value=query;
- window.addEventListener('lernova:synced',()=>{if($('xp'))$('xp').textContent=LernovaStore.xp();if($('known'))$('known').textContent=LernovaStore.known().length;if($('review'))$('review').textContent=LernovaStore.reviewDue().length;if($('streak'))$('streak').textContent=LernovaStore.get('streak',0);if($('level'))$('level').textContent=LERNOVA.level(LernovaStore.xp())[0];});
+ window.addEventListener('lernova:synced',()=>{if($('xp'))$('xp').textContent=LernovaStore.xp();if($('known'))$('known').textContent=LernovaStore.known().length;if($('review'))$('review').textContent=LernovaStore.reviewDue().length;if($('mistakes'))$('mistakes').textContent=LernovaStore.mistakes().length;if($('streak'))$('streak').textContent=LernovaStore.get('streak',0);if($('level'))$('level').textContent=LERNOVA.level(LernovaStore.xp())[0];});
 });
+

@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  const requestedChapter=params.get('chapter');if(requestedChapter==='all'||titles.has(Number(requestedChapter)))chapterSelect.value=requestedChapter;
  const requestedMode=params.get('mode');if(requestedMode&&[...modeSelect.options].some(o=>o.value===requestedMode))modeSelect.value=requestedMode;
  const wordKey=w=>LERNOVA.key(w),label=w=>`${w.article?`${w.article} `:''}${w.german}`;
- const chapterWords=()=>LERNOVA.words.filter(w=>chapterSelect.value==='all'||w.chapter===Number(chapterSelect.value));
+ const mistakeOnly=params.get('mistakes')==='1';const chapterWords=()=>LERNOVA.words.filter(w=>(chapterSelect.value==='all'||w.chapter===Number(chapterSelect.value))&&(!mistakeOnly||LernovaStore.mistakes().includes(wordKey(w))));
  const grammarItems=()=>((window.LERNOVA_GRAMMAR_QUESTIONS)||[]).filter(q=>chapterSelect.value==='all'||q.chapter===Number(chapterSelect.value));
  function eligibleWords(mode){let words=chapterWords();if(mode==='article')words=words.filter(w=>w.type==='Nomen'&&w.article);if(mode==='plural')words=words.filter(w=>w.type==='Nomen'&&w.plural);return words;}
  function modeChoices(word){const choices=['de-ar','ar-de','typing','listen'];if(word.type==='Nomen'&&word.article)choices.push('article');if(word.type==='Nomen'&&word.plural)choices.push('plural');return choices;}
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(mode==='grammar')return grammarItems().map(question=>({kind:'grammar',question}));
   if(mode==='mixed'||mode==='exam'){
    const words=eligibleWords('mixed').map(word=>({kind:'word',word,qmode:modeChoices(word)[Math.floor(Math.random()*modeChoices(word).length)]}));
-   return [...words,...grammarItems().map(question=>({kind:'grammar',question}))];
+   return mistakeOnly?words:[...words,...grammarItems().map(question=>({kind:'grammar',question}))];
   }
   return eligibleWords(mode).map(word=>({kind:'word',word,qmode:mode}));
  }
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   }else if(!all)pool=shuffle(pool).slice(0,requested);else pool=shuffle(pool);
   queue=pool;score=0;index=0;missed=[];draw();
  }
- function header(){return `<div class="quiz-head"><span>السؤال ${index+1} / ${queue.length}</span><span>${score} صحيح</span><span>${chapterSelect.value==='all'?'كل الفصول':`Kapitel ${chapterSelect.value}`}</span></div>`;}
+ function header(){return `<div class="quiz-head"><span>${mistakeOnly?'دفتر الأخطاء · ':''}السؤال ${index+1} / ${queue.length}</span><span>${score} صحيح</span><span>${chapterSelect.value==='all'?'كل الفصول':`Kapitel ${chapterSelect.value}`}</span></div>`;}
  function draw(){
   if(index>=queue.length){finish();return;}
   current=queue[index];answered=false;
@@ -84,16 +84,17 @@ document.addEventListener('DOMContentLoaded',()=>{
  }
  function grade(ok,button,correct,explanation){
   if(answered)return;answered=true;
-  if(ok){score++;if(current.kind==='word')LernovaStore.markKnown(wordKey(current.word));LernovaStore.addXP(2);if(button)button.classList.add('correct')}
-  else{if(current.kind==='word'){LernovaStore.addReview(wordKey(current.word));missed.push(label(current.word))}if(button)button.classList.add('wrong')}
+  if(ok){score++;if(current.kind==='word'){LernovaStore.markKnown(wordKey(current.word));LernovaStore.removeMistake(wordKey(current.word));}LernovaStore.addXP(2);if(button)button.classList.add('correct')}
+  else{if(current.kind==='word'){LernovaStore.addReview(wordKey(current.word));LernovaStore.addMistake(wordKey(current.word));missed.push(label(current.word))}if(button)button.classList.add('wrong')}
   app.querySelectorAll('.option').forEach(b=>{b.disabled=true;if(b.textContent.trim()===String(correct).trim())b.classList.add('correct')});
   $('feedback').innerHTML=`<p>${ok?'إجابة صحيحة ✓':`الإجابة الصحيحة: <b>${esc(correct)}</b>`}</p>${explanation?`<small>${esc(explanation)}</small>`:''}`;
   $('continue').hidden=false;$('continue').onclick=()=>{index++;draw()};
  }
  function finish(){
   const percent=queue.length?Math.round(score/queue.length*100):0;
-  app.innerHTML=`<section class="result"><div class="result-icon">🏆</div><h2>خلص التدريب!</h2><p>نتيجتك: <strong>${score} / ${queue.length}</strong> (${percent}٪)</p><p>الفصل: ${chapterSelect.value==='all'?'كل الفصول':`Kapitel ${chapterSelect.value}`}</p>${missed.length?`<p>أضفنا الكلمات التي أخطأت فيها لقائمة المراجعة.</p><p>${missed.map(esc).join('، ')}</p>`:''}<button class="btn primary" id="again">إعادة بنفس الإعدادات</button></section>`;
+  app.innerHTML=`<section class="result"><div class="result-icon">🏆</div><h2>خلص التدريب!</h2><p>نتيجتك: <strong>${score} / ${queue.length}</strong> (${percent}٪)</p><p>الفصل: ${chapterSelect.value==='all'?'كل الفصول':`Kapitel ${chapterSelect.value}`}</p>${missed.length?`<p>أضفنا الكلمات التي أخطأت فيها لدفتر الأخطاء والمراجعة.</p><p>${missed.map(esc).join('، ')}</p>`:''}<button class="btn primary" id="again">إعادة بنفس الإعدادات</button></section>`;
   $('again').onclick=start;
  }
  updateAvailable();
 });
+
