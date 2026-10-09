@@ -48,10 +48,10 @@
     const refresh = async session => {
       const user = session?.user;
       if (!user) { localStorage.removeItem('lernovaProfile'); paint({}, false); return; }
-      let record = { username: user.user_metadata?.username || '', avatar_url: user.user_metadata?.avatar_url || '' };
+      let record = { username: user.user_metadata?.username || user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || '', avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || '' };
       try {
         const { data } = await client.from('profiles').select('username,avatar_url').eq('id', user.id).maybeSingle();
-        if (data) record = { username: data.username || record.username, avatar_url: data.avatar_url || record.avatar_url };
+        if (data) record = { username: data.username || record.username, avatar_url: data.avatar_url ?? record.avatar_url };
       } catch (error) { console.info('Profile details are not available yet:', error.message); }
       localStorage.setItem('lernovaProfile', JSON.stringify(record));
       paint(record, true);
@@ -67,3 +67,4 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, { once: true });
   else mount();
 })();
+
