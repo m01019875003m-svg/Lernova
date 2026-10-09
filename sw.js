@@ -1,5 +1,5 @@
 /* Lernova A1 offline support */
-const CACHE = "lernova-a1-v9";
+const CACHE = "lernova-a1-v10";
 const ASSETS = [
   "./", "./index.html", "./manifest.json",
   "./assets/lernova-icon.svg", "./assets/lernova-icon-192.png", "./assets/lernova-icon-512.png",
@@ -7,7 +7,7 @@ const ASSETS = [
   "./data/a1.js", "./data/grammar-a1.js", "./data/conversations-a1.js",
   "./js/storage.js", "./js/core.js", "./js/app.js", "./js/words.js", "./js/review.js",
   "./js/quiz.js", "./js/auth.js", "./js/sync.js", "./js/config.js", "./js/language.js",
-  "./js/profile-ui.js",
+  "./js/profile-ui.js", "./js/tools.js/tools.js",
   "./pages/lessons.html", "./pages/chapters.html", "./pages/words.html", "./pages/review.html",
   "./pages/quiz.html", "./pages/exam.html", "./pages/grammar.html", "./pages/listening.html",
   "./pages/speaking.html", "./pages/progress.html", "./pages/profile.html",
