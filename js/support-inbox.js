@@ -54,6 +54,13 @@
     details.append(make('span', '', row.sender_email ? 'بريد الرد: ' + row.sender_email : (row.user_id ? 'مستخدم مسجل' : 'رسالة دون تسجيل دخول')));
     card.append(details);
 
+    if (row.sender_email) {
+      const reply = make('a', 'btn primary inbox-action', '✉️ الرد عبر البريد');
+      reply.href = 'mailto:' + encodeURIComponent(row.sender_email) + '?subject=' + encodeURIComponent('رد Lernova على رسالتك') + '&body=' + encodeURIComponent('مرحبًا،\n\nشكرًا لتواصلك مع Lernova.\n\n');
+      reply.setAttribute('aria-label', 'الرد على رسالة ' + row.sender_email);
+      card.append(reply);
+    }
+
     if (row.status !== 'resolved') {
       const nextStatus = row.status === 'new' ? 'read' : 'resolved';
       const actionText = row.status === 'new' ? 'تمت المراجعة' : 'تم الحل';
