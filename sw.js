@@ -1,5 +1,5 @@
 /* Lernova A1 offline support */
-const CACHE = "lernova-a1-v21";
+const CACHE = "lernova-a1-v22";
 const AUTH_SDK = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
 const ASSETS = [
   AUTH_SDK,
@@ -63,3 +63,4 @@ self.addEventListener('fetch', event => {
     }
   })());
 });
+
