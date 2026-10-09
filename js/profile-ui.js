@@ -68,3 +68,21 @@
   else mount();
 })();
 
+
+
+/* Consistent dimensional icons; labels remain selectable and translatable. */
+(()=>{
+ const base=/\/pages\//.test(location.pathname)?'../':'./';
+ const icons={lessons:'words',chapters:'words',words:'words',review:'review',quiz:'quiz',exam:'exam',progress:'progress',listening:'listening',speaking:'speaking',profile:'profile',mistakes:'mistakes',today:'today',grammar:'grammar',support:'support','support-inbox':'support'};
+ const strip=t=>t.replace(/^[\p{Extended_Pictographic}\uFE0F\u200D\s]+/u,'');
+ const image=(name,cls='')=>{const img=document.createElement('img');img.className='learning-icon '+cls;img.src=base+'assets/ui-'+name+'-v2.svg';img.alt='';img.setAttribute('aria-hidden','true');img.width=64;img.height=64;return img;};
+ function mount(){
+  document.querySelectorAll('a.card[href]').forEach(card=>{const key=(card.getAttribute('href').match(/([^/]+)\.html/)||[])[1],name=icons[key];if(!name||card.querySelector('.learning-icon'))return;const heading=card.querySelector('h3');if(heading){heading.textContent=strip(heading.textContent);card.insertBefore(image(name),heading);}});
+  const key=(location.pathname.match(/([^/]+)\.html/)||[])[1],heading=document.querySelector('main h1');if(icons[key]&&heading&&!heading.querySelector('.learning-icon'))heading.prepend(image(icons[key],'page-learning-icon'));
+  document.querySelectorAll('.brand').forEach(brand=>{if(brand.querySelector('.brand-mark'))return;const img=document.createElement('img');img.className='brand-mark';img.src=base+'assets/lernova-launcher-v2-192.png';img.alt='';img.setAttribute('aria-hidden','true');brand.prepend(img);});
+  const fallback=document.querySelector('.header-avatar span');if(fallback){fallback.textContent='';const img=image('profile');img.className='account-symbol';fallback.append(img);}
+  const link=document.createElement('link');link.rel='icon';link.type='image/png';link.href=base+'assets/lernova-launcher-v2-192.png';document.head.append(link);
+  const touch=link.cloneNode();touch.rel='apple-touch-icon';document.head.append(touch);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
+})();
