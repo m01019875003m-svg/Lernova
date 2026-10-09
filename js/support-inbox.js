@@ -35,7 +35,7 @@
       return;
     }
     row.status = nextStatus;
-    renderMessage(row);
+    await loadInbox();
     showStatus('تم تحديث حالة الرسالة.');
   }
 
