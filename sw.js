@@ -1,5 +1,5 @@
 /* Lernova A1 offline support */
-const CACHE = "lernova-a1-v20";
+const CACHE = "lernova-a1-v21";
 const AUTH_SDK = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
 const ASSETS = [
   AUTH_SDK,
@@ -13,7 +13,8 @@ const ASSETS = [
   "./pages/lessons.html", "./pages/chapters.html", "./pages/words.html", "./pages/review.html",
   "./pages/quiz.html", "./pages/exam.html", "./pages/grammar.html", "./pages/listening.html",
   "./pages/speaking.html", "./pages/progress.html", "./pages/profile.html", "./pages/today.html",
-  "./pages/login.html", "./pages/signup.html", "./pages/mistakes.html", "./pages/support.html", "./pages/support-inbox.html"
+  "./pages/login.html", "./pages/signup.html", "./pages/mistakes.html", "./pages/support.html", "./pages/support-inbox.html",
+  "./assets/lernova-launcher-v2-192.png", "./assets/lernova-launcher-v2-512.png", "./assets/ui-exam-v2.svg", "./assets/ui-grammar-v2.svg", "./assets/ui-listening-v2.svg", "./assets/ui-mistakes-v2.svg", "./assets/ui-profile-v2.svg", "./assets/ui-progress-v2.svg", "./assets/ui-quiz-v2.svg", "./assets/ui-review-v2.svg", "./assets/ui-speaking-v2.svg", "./assets/ui-support-v2.svg", "./assets/ui-today-v2.svg", "./assets/ui-words-v2.svg"
 ];
 
 
