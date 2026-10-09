@@ -76,3 +76,7 @@ create policy "Users delete own avatar photos" on storage.objects
   for delete to authenticated using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
 
 notify pgrst, 'reload schema';
+
+-- Extended progress state for account-scoped offline sync.
+alter table public.user_progress add column if not exists client_state jsonb not null default '{}'::jsonb;
+
