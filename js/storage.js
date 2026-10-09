@@ -17,3 +17,25 @@ const LernovaStore={
   touchDaily(){const today=this.today(),last=this.get('lastActivity','');if(last!==today){const yesterday=this.afterDays(-1);let streak=Number(this.get('streak',0))||0;this.set('streak',last===yesterday?streak+1:1);this.set('lastActivity',today);this.set('dailyCount',1);}else this.set('dailyCount',(Number(this.get('dailyCount',0))||0)+1);},
   reset(){Object.keys(localStorage).filter(k=>k.startsWith('lernova_')).forEach(k=>localStorage.removeItem(k));location.reload()}
 };
+
+
+// Track unique newly learned words for the profile's daily goal.
+(() => {
+  const markKnown = LernovaStore.markKnown.bind(LernovaStore);
+  LernovaStore.markKnown = function(key) {
+    const added = markKnown(key);
+    if (!added) return added;
+    const today = this.today();
+    const dateKey = 'lernova_dailyStudyDate';
+    const wordsKey = 'lernova_dailyWords';
+    const date = localStorage.getItem(dateKey) || '';
+    let words = [];
+    try { words = date === today ? JSON.parse(localStorage.getItem(wordsKey) || '[]') : []; } catch {}
+    if (!Array.isArray(words)) words = [];
+    if (!words.includes(key)) words.push(key);
+    localStorage.setItem(dateKey, today);
+    localStorage.setItem(wordsKey, JSON.stringify(words));
+    window.dispatchEvent(new CustomEvent('lernova:daily-goal-updated'));
+    return added;
+  };
+})();
