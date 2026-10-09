@@ -1,4 +1,111 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lernova - الدعم والشكاوى</title><link rel="stylesheet" href="../css/main.css"></head><body><main class="container"><nav><a href="../index.html">الرئيسية</a></nav><section class="card"><h1>الدعم والشكاوى</h1><p>اكتب اقتراحك أو المشكلة التي واجهتك.</p><textarea id="text" rows="8" placeholder="اكتب هنا..."></textarea><button onclick="send()">حفظ الرسالة</button><p id="msg"></p></section></main><script>function send(){const v=text.value.trim();if(!v){msg.textContent='اكتب الرسالة أولًا.';return}const list=JSON.parse(localStorage.getItem('lernovaSupport')||'[]');list.push({text:v,date:new Date().toISOString()});localStorage.setItem('lernovaSupport',JSON.stringify(list));text.value='';msg.textContent='تم حفظ الرسالة على الجهاز ✓'}</script><script src="../js/language.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../js/config.js"></script><script src="../js/auth.js"></script>
-<script src="../js/profile-ui.js"></script>
-</body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#5b5bd6">
+  <title>Lernova — الدعم والشكاوى</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="../index.html">Ler<span>nova</span></a>
+      <div class="nav-actions">
+        <a class="btn ghost" href="../index.html">الرئيسية</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container support-page">
+    <section class="card support-hero">
+      <div class="support-hero-icon" aria-hidden="true">💬</div>
+      <div>
+        <span class="profile-kicker">نحن هنا لمساعدتك</span>
+        <h1>الدعم والشكاوى</h1>
+        <p class="muted">اكتب مشكلتك أو اقتراحك، وأضف التفاصيل التي تساعدنا على فهم طلبك.</p>
+      </div>
+    </section>
+
+    <section class="support-layout">
+      <form id="supportForm" class="card support-form">
+        <div class="section-head">
+          <div><h2>اكتب رسالتك</h2><p class="muted">تُحفظ الرسالة على هذا الجهاز.</p></div>
+          <span class="support-local-badge"><i></i> حفظ محلي</span>
+        </div>
+
+        <label class="field-label" for="supportCategory">نوع الرسالة</label>
+        <select class="field" id="supportCategory" required>
+          <option value="suggestion">اقتراح للتطوير</option>
+          <option value="problem">مشكلة تقنية</option>
+          <option value="complaint">شكوى</option>
+          <option value="other">أخرى</option>
+        </select>
+
+        <label class="field-label" for="supportText">تفاصيل الرسالة</label>
+        <textarea class="field support-textarea" id="supportText" rows="7" minlength="8" maxlength="2000" placeholder="اكتبي رسالتك هنا…" required></textarea>
+        <div class="support-form-footer">
+          <p class="muted small-note">من ٨ إلى ٢٠٠٠ حرف</p>
+          <button class="btn primary" type="submit">حفظ الرسالة <span aria-hidden="true">←</span></button>
+        </div>
+        <p id="supportMessage" class="support-message" role="status" aria-live="polite"></p>
+      </form>
+
+      <aside class="card support-info">
+        <div class="support-info-icon" aria-hidden="true">✨</div>
+        <h2>كيف نقدر نساعدك؟</h2>
+        <p class="muted">اختر نوع الرسالة، ثم اشرح المشكلة أو الاقتراح الذي تريد إضافته.</p>
+        <div class="support-offline-note"><span aria-hidden="true">📱</span><p><strong>تعمل دون إنترنت</strong><br><span class="muted">تُحفظ الرسالة على جهازك حتى عند انقطاع الاتصال.</span></p></div>
+        <a class="btn ghost" href="../index.html">العودة إلى Lernova</a>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="footer">Lernova · creating by mohamed Ibrahim khafagy</footer>
+
+  <script>
+    (() => {
+      const form = document.getElementById('supportForm');
+      const category = document.getElementById('supportCategory');
+      const input = document.getElementById('supportText');
+      const message = document.getElementById('supportMessage');
+      const storageKey = 'lernova_support';
+
+      function readMessages() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(storageKey) || localStorage.getItem('lernovaSupport') || '[]');
+          return Array.isArray(saved) ? saved : [];
+        } catch { return []; }
+      }
+
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        const text = input.value.trim();
+        if (text.length < 8) {
+          message.textContent = 'اكتب تفاصيل أكثر قليلًا قبل الحفظ.';
+          message.classList.add('is-error');
+          input.focus();
+          return;
+        }
+
+        try {
+          const messages = readMessages();
+          messages.push({ category: category.value, text, date: new Date().toISOString() });
+          localStorage.setItem(storageKey, JSON.stringify(messages));
+          message.textContent = 'تم حفظ رسالتك على هذا الجهاز ✓';
+          message.classList.remove('is-error');
+          form.reset();
+        } catch {
+          message.textContent = 'تعذر الحفظ. تأكد من وجود مساحة متاحة على الجهاز.';
+          message.classList.add('is-error');
+        }
+      });
+    })();
+  </script>
+  <script src="../js/language.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/profile-ui.js"></script>
+</body>
+</html>
