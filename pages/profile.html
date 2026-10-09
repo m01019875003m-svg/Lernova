@@ -31,6 +31,19 @@
       </div>
       <aside class="card profile-tip"><span class="tip-icon">✨</span><h3>ملفك جاهز للتعلم</h3><p>اختر صورة واضحة واكتب الاسم الذي تحب أن تراه في التطبيق. الصورة مدعومة بصيغ JPG وPNG وWebP حتى 5 ميجابايت.</p><a class="btn ghost" href="progress.html">عرض تقدمي ←</a></aside>
     </section>
+    <section class="card profile-panel extras-panel">
+      <div class="section-head"><div><h2>تقدّمك والنسخة الاحتياطية</h2><p class="muted">هدف يومي ونسخة تحفظ تقدمك على هذا الجهاز.</p></div></div>
+      <p id="syncStatus" class="sync-status" role="status" aria-live="polite"></p>
+      <label class="field-label" for="dailyGoal">هدف الكلمات اليومي</label>
+      <select class="field" id="dailyGoal"><option value="5">٥ كلمات</option><option value="10">١٠ كلمات</option><option value="15">١٥ كلمة</option><option value="20">٢٠ كلمة</option></select>
+      <p id="dailyGoalProgress" class="goal-progress" role="progressbar" aria-valuemin="0"></p>
+      <div class="profile-actions"><button type="button" class="btn primary" id="exportBackup">تنزيل نسخة احتياطية</button><label class="btn ghost" for="importBackup">استيراد نسخة</label><input id="importBackup" type="file" accept="application/json,.json" hidden></div>
+      <hr class="soft-rule">
+      <h3>الصوت الألماني دون إنترنت</h3>
+      <p id="offlineVoiceStatus" class="muted" role="status">جارٍ التحقق من الأصوات المثبتة على الهاتف…</p>
+      <div class="profile-actions"><button type="button" class="btn ghost" id="testOfflineVoice" disabled>اختبار الصوت الألماني</button><a class="btn ghost" href="listening.html">فتح تدريب الاستماع</a></div>
+      <p class="muted small-note">للنطق دون إنترنت، يلزم تثبيت صوت ألماني محليًا في إعدادات تحويل النص إلى كلام على الهاتف.</p>
+    </section>
     <section class="profile-footer-actions"><button id="logout" class="btn ghost">تسجيل الخروج</button><a class="muted" href="../index.html">العودة للرئيسية</a></section>
   </main>
   <footer class="footer">Lernova · creating by mohamed Ibrahim khafagy</footer>
@@ -92,6 +105,6 @@
     load();
   })();
   </script>
-  <script src="../js/profile-ui.js"></script><script src="../js/language.js"></script>
+  <script src="../js/profile-ui.js"></script><script src="../js/language.js"></script><script src="../js/tools.js/tools.js"></script>
 </body>
 </html>
