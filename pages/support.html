@@ -7,15 +7,13 @@
   <title>Lernova — الدعم والشكاوى</title>
   <link rel="stylesheet" href="../css/main.css">
   <style>
-.support-page{padding-block:24px 40px}.support-hero{display:flex;align-items:center;gap:18px;padding:clamp(22px,5vw,36px);margin-block:18px;background:radial-gradient(circle at 95% 8%,color-mix(in srgb,var(--primary) 15%,var(--surface)),var(--surface) 48%)}.support-hero-icon{width:64px;height:64px;flex:0 0 64px;display:grid;place-items:center;border-radius:20px;background:color-mix(in srgb,var(--primary) 12%,var(--surface));font-size:1.8rem}.support-hero h1{margin:2px 0;font-size:clamp(1.65rem,5vw,2.35rem);line-height:1.3}.support-hero p{max-width:620px}.support-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(250px,.8fr);align-items:start;gap:18px}.support-form,.support-info{padding:clamp(18px,4vw,26px)}.support-form{display:grid;gap:9px}.support-form .section-head{align-items:flex-start;margin-bottom:4px}.support-form .section-head h2,.support-info h2{font-size:1.2rem}.support-form .section-head p{font-size:.88rem;margin-top:3px}.support-local-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid color-mix(in srgb,var(--good) 25%,var(--line));border-radius:999px;background:color-mix(in srgb,var(--good) 8%,var(--surface));color:var(--good);font-size:.78rem;font-weight:750;white-space:nowrap}.support-local-badge i{width:7px;height:7px;border-radius:50%;background:var(--good)}.support-form .field{min-height:48px;font-size:16px}.support-textarea{min-height:170px;resize:vertical;line-height:1.7}.support-form-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:2px}.support-form-footer .small-note{margin:0}.support-form-footer .btn{min-height:46px}.support-message{min-height:1.5em;margin-top:2px;color:var(--good);font-weight:700}.support-message.is-error{color:var(--bad)}.support-info{display:grid;gap:10px;background:linear-gradient(145deg,color-mix(in srgb,var(--primary) 7%,var(--surface)),var(--surface))}.support-info-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:color-mix(in srgb,var(--primary) 12%,var(--surface));font-size:1.45rem}.support-info p{font-size:.92rem}.support-offline-note{display:flex;align-items:flex-start;gap:11px;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.support-offline-note>span{font-size:1.25rem}.support-offline-note p{margin:0;font-size:.88rem}.support-info>.btn{justify-self:start;margin-top:3px}@media(max-width:700px){.support-page{padding-top:16px}.support-hero{align-items:flex-start;gap:13px;padding:19px;border-radius:18px}.support-hero-icon{width:50px;height:50px;flex-basis:50px;border-radius:15px;font-size:1.45rem}.support-layout{grid-template-columns:1fr;gap:13px}.support-form,.support-info{padding:18px}.support-form .section-head{gap:8px}.support-form-footer{align-items:stretch;flex-direction:column}.support-form-footer .btn,.support-info>.btn{width:100%}.support-info>.btn{justify-self:stretch}}@media(max-width:370px){.support-local-badge{padding:5px 8px;font-size:.72rem}.support-form .section-head h2{font-size:1.05rem}}</style>
+.support-page{padding-block:24px 40px}.support-hero{display:flex;align-items:center;gap:18px;padding:clamp(22px,5vw,36px);margin-block:18px;background:radial-gradient(circle at 95% 8%,color-mix(in srgb,var(--primary) 15%,var(--surface)),var(--surface) 48%)}.support-hero-icon{width:64px;height:64px;flex:0 0 64px;display:grid;place-items:center;border-radius:20px;background:color-mix(in srgb,var(--primary) 12%,var(--surface));font-size:1.8rem}.support-hero h1{margin:2px 0;font-size:clamp(1.65rem,5vw,2.35rem);line-height:1.3}.support-hero p{max-width:620px}.support-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(250px,.8fr);align-items:start;gap:18px}.support-form,.support-info{padding:clamp(18px,4vw,26px)}.support-form{display:grid;gap:9px}.support-form .section-head{align-items:flex-start;margin-bottom:4px}.support-form .section-head h2,.support-info h2{font-size:1.2rem}.support-form .section-head p{font-size:.88rem;margin-top:3px}.support-local-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid color-mix(in srgb,var(--good) 25%,var(--line));border-radius:999px;background:color-mix(in srgb,var(--good) 8%,var(--surface));color:var(--good);font-size:.78rem;font-weight:750;white-space:nowrap}.support-local-badge i{width:7px;height:7px;border-radius:50%;background:var(--good)}.support-form .field{min-height:48px;font-size:16px}.support-textarea{min-height:150px;resize:vertical;line-height:1.7}.support-form-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:2px}.support-form-footer .small-note{margin:0}.support-form-footer .btn{min-height:46px}.support-message{min-height:1.5em;margin-top:2px;color:var(--good);font-weight:700}.support-message.is-error{color:var(--bad)}.support-info{display:grid;gap:10px;background:linear-gradient(145deg,color-mix(in srgb,var(--primary) 7%,var(--surface)),var(--surface))}.support-info-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:color-mix(in srgb,var(--primary) 12%,var(--surface));font-size:1.45rem}.support-info p{font-size:.92rem}.support-offline-note{display:flex;align-items:flex-start;gap:11px;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}.support-offline-note>span{font-size:1.25rem}.support-offline-note p{margin:0;font-size:.88rem}.support-info>.btn{justify-self:start;margin-top:3px}@media(max-width:700px){.support-page{padding-top:16px}.support-hero{align-items:flex-start;gap:13px;padding:19px;border-radius:18px}.support-hero-icon{width:50px;height:50px;flex-basis:50px;border-radius:15px;font-size:1.45rem}.support-layout{grid-template-columns:1fr;gap:13px}.support-form,.support-info{padding:18px}.support-form .section-head{gap:8px}.support-form-footer{align-items:stretch;flex-direction:column}.support-form-footer .btn,.support-info>.btn{width:100%}.support-info>.btn{justify-self:stretch}}@media(max-width:370px){.support-local-badge{padding:5px 8px;font-size:.72rem}.support-form .section-head h2{font-size:1.05rem}}</style>
 </head>
 <body>
   <header class="topbar">
     <div class="container nav">
       <a class="brand" href="../index.html">Ler<span>nova</span></a>
-      <div class="nav-actions">
-        <a class="btn ghost" href="../index.html">الرئيسية</a>
-      </div>
+      <div class="nav-actions"><a class="btn ghost" href="../index.html">الرئيسية</a></div>
     </div>
   </header>
 
@@ -32,8 +30,8 @@
     <section class="support-layout">
       <form id="supportForm" class="card support-form">
         <div class="section-head">
-          <div><h2>اكتب رسالتك</h2><p class="muted">تُحفظ الرسالة على هذا الجهاز.</p></div>
-          <span class="support-local-badge"><i></i> حفظ محلي</span>
+          <div><h2>اكتب رسالتك</h2><p class="muted">تُحفظ على جهازك، ثم تُرسل عند توفر الإنترنت.</p></div>
+          <span class="support-local-badge"><i></i> حفظ أوفلاين</span>
         </div>
 
         <label class="field-label" for="supportCategory">نوع الرسالة</label>
@@ -45,10 +43,15 @@
         </select>
 
         <label class="field-label" for="supportText">تفاصيل الرسالة</label>
-        <textarea class="field support-textarea" id="supportText" rows="7" minlength="8" maxlength="2000" placeholder="اكتب رسالتك هنا…" required></textarea>
+        <textarea class="field support-textarea" id="supportText" rows="6" minlength="8" maxlength="2000" placeholder="اكتب رسالتك هنا…" required></textarea>
+
+        <label class="field-label" for="supportEmail">بريد إلكتروني للرد (اختياري)</label>
+        <input class="field" id="supportEmail" type="email" maxlength="254" autocomplete="email" placeholder="name@example.com">
+        <p class="muted small-note">لن نحتاج بريدك إلا إذا أردت أن نرد عليك.</p>
+
         <div class="support-form-footer">
           <p class="muted small-note">من ٨ إلى ٢٠٠٠ حرف</p>
-          <button class="btn primary" type="submit">حفظ الرسالة <span aria-hidden="true">←</span></button>
+          <button class="btn primary" type="submit">حفظ وإرسال الرسالة <span aria-hidden="true">←</span></button>
         </div>
         <p id="supportMessage" class="support-message" role="status" aria-live="polite"></p>
       </form>
@@ -57,57 +60,19 @@
         <div class="support-info-icon" aria-hidden="true">✨</div>
         <h2>كيف نقدر نساعدك؟</h2>
         <p class="muted">اختر نوع الرسالة، ثم اشرح المشكلة أو الاقتراح الذي تريد إضافته.</p>
-        <div class="support-offline-note"><span aria-hidden="true">📱</span><p><strong>تعمل دون إنترنت</strong><br><span class="muted">تُحفظ الرسالة على جهازك حتى عند انقطاع الاتصال.</span></p></div>
+        <div class="support-offline-note"><span aria-hidden="true">📱</span><p><strong>تعمل دون إنترنت</strong><br><span class="muted">تُحفظ الرسالة في قائمة انتظار خاصة على جهازك، وتُرسل تلقائيًا عند الاتصال.</span></p></div>
+        <a class="btn ghost" href="./support-inbox.html">صندوق رسائل الدعم للمسؤول</a>
         <a class="btn ghost" href="../index.html">العودة إلى Lernova</a>
       </aside>
     </section>
   </main>
 
   <footer class="footer">Lernova · creating by mohamed Ibrahim khafagy</footer>
-
-  <script>
-    (() => {
-      const form = document.getElementById('supportForm');
-      const category = document.getElementById('supportCategory');
-      const input = document.getElementById('supportText');
-      const message = document.getElementById('supportMessage');
-      const storageKey = 'lernova_support';
-
-      function readMessages() {
-        try {
-          const saved = JSON.parse(localStorage.getItem(storageKey) || localStorage.getItem('lernovaSupport') || '[]');
-          return Array.isArray(saved) ? saved : [];
-        } catch { return []; }
-      }
-
-      form.addEventListener('submit', event => {
-        event.preventDefault();
-        const text = input.value.trim();
-        if (text.length < 8) {
-          message.textContent = 'اكتب تفاصيل أكثر قليلًا قبل الحفظ.';
-          message.classList.add('is-error');
-          input.focus();
-          return;
-        }
-
-        try {
-          const messages = readMessages();
-          messages.push({ category: category.value, text, date: new Date().toISOString() });
-          localStorage.setItem(storageKey, JSON.stringify(messages));
-          message.textContent = 'تم حفظ رسالتك على هذا الجهاز ✓';
-          message.classList.remove('is-error');
-          form.reset();
-        } catch {
-          message.textContent = 'تعذر الحفظ. تأكد من وجود مساحة متاحة على الجهاز.';
-          message.classList.add('is-error');
-        }
-      });
-    })();
-  </script>
   <script src="../js/language.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../js/config.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/profile-ui.js"></script>
+  <script src="../js/support.js"></script>
 </body>
 </html>
