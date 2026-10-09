@@ -20,6 +20,8 @@
     </section>
 
 
+
+
     <section class="profile-layout">
       <div class="card profile-panel">
         <div class="section-head"><div><h2>معلومات الحساب</h2><p class="muted">اسمك وصورتك يظهران في الشريط العلوي بكل الصفحات.</p></div><span class="profile-status"><i></i> حسابك</span></div>
@@ -35,9 +37,11 @@
     <section class="card profile-panel extras-panel">
       <div class="section-head"><div><h2>تقدّمك والنسخة الاحتياطية</h2><p class="muted">هدف يومي ونسخة تحفظ تقدمك على هذا الجهاز.</p></div></div>
       <p id="syncStatus" class="sync-status" role="status" aria-live="polite"></p>
-      <label class="field-label" for="dailyGoal">هدف الكلمات اليومي (من ٣٠ إلى ٥٠٠)</label>
-      <input class="field" id="dailyGoal" type="number" min="30" max="500" step="1" value="30" inputmode="numeric">
-      <p class="muted small-note">اختار أي هدف من ٣٠ كلمة لحد ٥٠٠ كلمة يوميًا.</p>
+      <label class="field-label" for="dailyGoal">هدف الكلمات اليومي</label>
+      <div class="profile-actions goal-presets" role="group" aria-label="اختيارات سريعة للهدف اليومي"><button type="button" class="btn ghost goal-preset" data-goal="5">٥ كلمات</button><button type="button" class="btn ghost goal-preset" data-goal="10">١٠ كلمات</button><button type="button" class="btn ghost goal-preset" data-goal="20">٢٠ كلمة</button></div>
+      <label class="field-label" for="dailyGoal">أو اكتب هدفك (من ٥ إلى ١٩٤٣ كلمة)</label>
+      <input class="field" id="dailyGoal" type="number" min="5" max="1943" step="1" value="5" inputmode="numeric">
+      <p class="muted small-note">اختار ٥ أو ١٠ أو ٢٠ كلمة، أو اكتب أي عدد تريده بدءًا من ٥.</p>
       <p id="dailyGoalProgress" class="goal-progress" role="progressbar" aria-valuemin="0"></p>
       <div class="profile-actions"><button type="button" class="btn primary" id="exportBackup">تنزيل نسخة احتياطية</button><label class="btn ghost" for="importBackup">استيراد نسخة</label><input id="importBackup" type="file" accept="application/json,.json" hidden></div>
       <hr class="soft-rule">
@@ -59,5 +63,3 @@
     const showAvatar = url => { avatarUrl = url || ''; if (url) { preview.src = url; preview.hidden = false; fallback.hidden = true; preview.onerror = () => { preview.hidden = true; fallback.hidden = false; }; } else { preview.removeAttribute('src'); preview.hidden = true; fallback.hidden = false; } };
     const say = (text, error = false) => { msg.textContent = text; msg.classList.toggle('is-error', error); };
     async function load() {
-      if (!client) { say('تعذر الاتصال بإعدادات الحساب. راجع js/config.js.', true); return; }
-      try {
