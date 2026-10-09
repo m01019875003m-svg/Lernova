@@ -26,6 +26,8 @@
       <div class="card profile-panel">
         <div class="section-head"><div><h2>معلومات الحساب</h2><p class="muted">اسمك وصورتك يظهران في الشريط العلوي بكل الصفحات.</p></div><span class="profile-status"><i></i> حسابك</span></div>
         <form id="profileForm" class="profile-form">
+          <label for="accountEmail">البريد الإلكتروني</label>
+          <input class="field" id="accountEmail" type="email" readonly dir="ltr">
           <label for="username">اسم المستخدم</label>
           <input class="field" id="username" maxlength="40" autocomplete="nickname" placeholder="اكتب الاسم الذي تريد ظهوره" required>
           <div class="profile-actions"><button class="btn primary" id="saveProfile">حفظ التغييرات</button><button class="btn ghost" type="button" id="removeAvatar">إزالة الصورة</button></div>
@@ -63,3 +65,106 @@
     const showAvatar = url => { avatarUrl = url || ''; if (url) { preview.src = url; preview.hidden = false; fallback.hidden = true; preview.onerror = () => { preview.hidden = true; fallback.hidden = false; }; } else { preview.removeAttribute('src'); preview.hidden = true; fallback.hidden = false; } };
     const say = (text, error = false) => { msg.textContent = text; msg.classList.toggle('is-error', error); };
     async function load() {
+      if (!client) { say('تعذّر تحميل إعدادات الحساب. أعد تحميل الصفحة.', true); return; }
+      say('جارٍ تحميل حسابك…');
+      try {
+        const { data, error } = await client.auth.getSession();
+        if (error) throw error;
+        user = data?.session?.user;
+        if (!user) { location.replace('login.html'); return; }
+        const metadata = user.user_metadata || {};
+        const initial = { username: metadata.username || metadata.full_name || metadata.name || user.email?.split('@')[0] || '', avatar_url: metadata.avatar_url || metadata.picture || '' };
+        paint(initial);
+        say('');
+        try {
+          const { data: record, error: profileError } = await client.from('profiles').select('username,avatar_url').eq('id', user.id).maybeSingle();
+          if (profileError) throw profileError;
+          if (record) paint({ username: record.username || initial.username, avatar_url: record.avatar_url ?? initial.avatar_url });
+        } catch (error) { say('تم تحميل بيانات حسابك. تعذّر تحميل تفاصيل الملف المحفوظة.', true); console.warn('Profile load:', error.message); }
+      } catch (error) { say(error.message || 'تعذّر تحميل الحساب. حاول إعادة تحميل الصفحة.', true); }
+    }
+    function paint(record) {
+      input.value = record.username || '';
+      document.getElementById('accountEmail').value = user?.email || '';
+      document.getElementById('profileHeading').textContent = record.username ? 'أهلاً، ' + record.username : 'ملفك الشخصي';
+      showAvatar(record.avatar_url);
+      window.dispatchEvent(new CustomEvent('lernova:profile-updated', { detail: record }));
+    }
+
+    // Bind logout independently of profile loading or database availability.
+    document.getElementById('logout').addEventListener('click', async event => {
+      const button = event.currentTarget;
+      button.disabled = true; button.textContent = 'جارٍ تسجيل الخروج…';
+      try {
+        const { error } = await LernovaAuth.signOut();
+        if (error) throw error;
+        localStorage.removeItem('lernovaProfile');
+        location.replace('login.html');
+      } catch (error) { say(error.message || 'تعذّر تسجيل الخروج. حاول مرة أخرى.', true); button.disabled = false; button.textContent = 'تسجيل الخروج'; }
+    });
+
+    let previewObjectUrl = '';
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+      if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type) || file.size > 5 * 1024 * 1024) {
+        fileInput.value = ''; say('اختر صورة JPG أو PNG أو WebP أو GIF حتى 5 ميجابايت.', true); return;
+      }
+      selectedFile = file;
+      if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
+      previewObjectUrl = URL.createObjectURL(file);
+      preview.src = previewObjectUrl; preview.hidden = false; fallback.hidden = true;
+      say('اضغط حفظ التغييرات لحفظ الصورة.');
+    });
+    document.getElementById('removeAvatar').addEventListener('click', () => {
+      selectedFile = null; fileInput.value = ''; showAvatar('');
+      say('اضغط حفظ التغييرات لحفظ إزالة الصورة.');
+    });
+    document.getElementById('profileForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      if (!client || !user) { say('انتظر تحميل الحساب، ثم حاول مجددًا.', true); return; }
+      const username = input.value.trim();
+      if (!username) { say('اكتب اسم المستخدم أولًا.', true); return; }
+      const button = document.getElementById('saveProfile'); button.disabled = true;
+      say('جارٍ حفظ التغييرات…');
+      try {
+        if (selectedFile) {
+          const extension = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' }[selectedFile.type];
+          const path = user.id + '/' + Date.now() + '.' + extension;
+          const { error } = await client.storage.from('avatars').upload(path, selectedFile, { contentType: selectedFile.type });
+          if (error) throw error;
+          avatarUrl = client.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+        }
+        const record = { username, avatar_url: avatarUrl };
+        const { error: authError } = await client.auth.updateUser({ data: { ...record, picture: avatarUrl } });
+        if (authError) throw authError;
+        selectedFile = null; fileInput.value = ''; paint(record);
+        const { error: profileError } = await client.from('profiles').upsert({ id: user.id, ...record, updated_at: new Date().toISOString() }, { onConflict: 'id' });
+        if (profileError) { say('تم حفظ بيانات الحساب. مزامنة جدول الملف الشخصي غير متاحة حاليًا.', true); }
+        else say('تم حفظ التغييرات ✓');
+      } catch (error) { say(error.message || 'تعذّر حفظ التغييرات.', true); }
+      finally { button.disabled = false; }
+    });
+
+    const syncStatus = document.getElementById('syncStatus');
+    const showSyncStatus = () => { syncStatus.textContent = navigator.onLine ? 'حسابك متصل. تتم مزامنة التقدم عند توفر الاتصال.' : 'أنت دون اتصال. تقدمك محفوظ على هذا الجهاز.'; syncStatus.dataset.state = navigator.onLine ? 'ok' : 'offline'; };
+    window.addEventListener('online', showSyncStatus); window.addEventListener('offline', showSyncStatus); showSyncStatus();
+    const voiceStatus = document.getElementById('offlineVoiceStatus'), voiceButton = document.getElementById('testOfflineVoice');
+    let germanVoice = null;
+    function updateVoices() {
+      const voices = window.speechSynthesis?.getVoices() || [];
+      germanVoice = voices.find(voice => /^de([-_]|$)/i.test(voice.lang) && voice.localService) || null;
+      voiceStatus.textContent = germanVoice ? 'صوت ألماني محلي متاح: ' + germanVoice.name : 'لا يوجد صوت ألماني محلي متاح. ثبّته من إعدادات تحويل النص إلى كلام على هاتفك.';
+      voiceButton.disabled = !germanVoice;
+    }
+    if (window.speechSynthesis) { speechSynthesis.addEventListener('voiceschanged', updateVoices); }
+    voiceButton.addEventListener('click', () => { if (!germanVoice) return; const speech = new SpeechSynthesisUtterance('Guten Tag! Willkommen bei Lernova.'); speech.voice = germanVoice; speech.lang = germanVoice.lang; speechSynthesis.speak(speech); });
+    updateVoices();
+    load();
+  })();
+  </script>
+  <script src="../js/language.js"></script>
+  <script src="../js/profile-ui.js"></script>
+</body>
+</html>
+
