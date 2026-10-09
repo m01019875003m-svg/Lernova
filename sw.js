@@ -1,6 +1,8 @@
 /* Lernova A1 offline support */
-const CACHE = "lernova-a1-v19";
+const CACHE = "lernova-a1-v20";
+const AUTH_SDK = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
 const ASSETS = [
+  AUTH_SDK,
   "./", "./index.html", "./manifest.json",
   "./assets/lernova-icon.svg", "./assets/lernova-icon-192.png", "./assets/lernova-icon-512.png",
   "./css/main.css",
@@ -37,3 +39,26 @@ self.addEventListener("activate", event => {
 });
 
 
+
+
+// Only static app files and the public SDK are cached; auth/data API calls are never cached.
+self.addEventListener('fetch', event => {
+  const request=event.request,url=new URL(request.url),scope=new URL(self.registration.scope);
+  if(request.method!=='GET')return;
+  const appFile=url.origin===scope.origin&&url.pathname.startsWith(scope.pathname);
+  if(!appFile&&request.url!==AUTH_SDK)return;
+  const key=appFile?url.origin+url.pathname:request.url;
+  event.respondWith((async()=>{
+    const cache=await caches.open(CACHE);
+    try{
+      const response=await fetch(request);
+      if(response.ok||response.type==='opaque')await cache.put(key,response.clone());
+      return response;
+    }catch(error){
+      const saved=await cache.match(key);
+      if(saved)return saved;
+      if(request.mode==='navigate')return new Response('<html lang="ar" dir="rtl"><meta name="viewport" content="width=device-width,initial-scale=1"><h1>هذه الصفحة غير محفوظة بعد</h1><p>اتصل بالإنترنت وافتح التطبيق مرة واحدة، ثم حاول مجددًا.</p></html>',{status:503,headers:{'Content-Type':'text/html; charset=utf-8'}});
+      throw error;
+    }
+  })());
+});
