@@ -1,17 +1,17 @@
 /* Lernova A1 offline support */
-const CACHE = "lernova-a1-v16";
+const CACHE = "lernova-a1-v17";
 const ASSETS = [
   "./", "./index.html", "./manifest.json",
   "./assets/lernova-icon.svg", "./assets/lernova-icon-192.png", "./assets/lernova-icon-512.png",
   "./css/main.css",
   "./data/a1.js", "./data/grammar-a1.js", "./data/conversations-a1.js",
-  "./js/storage.js", "./js/core.js", "./js/app.js", "./js/words.js", "./js/review.js",
+  "./js/storage.js", "./js/core.js", "./js/app.js", "./js/words.js", "./js/review.js", "./js/mistakes.js",
   "./js/quiz.js", "./js/auth.js", "./js/sync.js", "./js/config.js", "./js/language.js",
   "./js/profile-ui.js", "./js/support.js", "./js/support-inbox.js", "./js/tools.js/tools.js",
   "./pages/lessons.html", "./pages/chapters.html", "./pages/words.html", "./pages/review.html",
   "./pages/quiz.html", "./pages/exam.html", "./pages/grammar.html", "./pages/listening.html",
   "./pages/speaking.html", "./pages/progress.html", "./pages/profile.html", "./pages/today.html",
-  "./pages/login.html", "./pages/signup.html", "./pages/support.html", "./pages/support-inbox.html"
+  "./pages/login.html", "./pages/signup.html", "./pages/mistakes.html", "./pages/support.html", "./pages/support-inbox.html"
 ];
 
 
@@ -35,3 +35,4 @@ self.addEventListener("activate", event => {
     await self.clients.claim();
   })());
 });
+
