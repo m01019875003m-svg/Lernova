@@ -1,5 +1,5 @@
 /* Lernova A1 offline support */
-const CACHE = "lernova-a1-v11";
+const CACHE = "lernova-a1-v12";
 const ASSETS = [
   "./", "./index.html", "./manifest.json",
   "./assets/lernova-icon.svg", "./assets/lernova-icon-192.png", "./assets/lernova-icon-512.png",
@@ -7,11 +7,11 @@ const ASSETS = [
   "./data/a1.js", "./data/grammar-a1.js", "./data/conversations-a1.js",
   "./js/storage.js", "./js/core.js", "./js/app.js", "./js/words.js", "./js/review.js",
   "./js/quiz.js", "./js/auth.js", "./js/sync.js", "./js/config.js", "./js/language.js",
-  "./js/profile-ui.js", "./js/tools.js/tools.js",
+  "./js/profile-ui.js", "./js/support.js", "./js/support-inbox.js", "./js/tools.js/tools.js",
   "./pages/lessons.html", "./pages/chapters.html", "./pages/words.html", "./pages/review.html",
   "./pages/quiz.html", "./pages/exam.html", "./pages/grammar.html", "./pages/listening.html",
   "./pages/speaking.html", "./pages/progress.html", "./pages/profile.html",
-  "./pages/login.html", "./pages/signup.html", "./pages/support.html"
+  "./pages/login.html", "./pages/signup.html", "./pages/support.html", "./pages/support-inbox.html"
 ];
 
 self.addEventListener("install", event => {
@@ -59,14 +59,11 @@ self.addEventListener("fetch", event => {
       if (request.mode === "navigate") {
         const page = await cache.match(request, { ignoreSearch: true });
         if (page) return page;
-        const home = await cache.match("./index.html");
-        if (home) return home;
-        return new Response(
-          "Lernova غير متصل بالإنترنت. افتح التطبيق مرة واحدة مع الاتصال لتحميل ملفاته.",
-          { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } }
-        );
       }
-      return Response.error();
+      return new Response("أنت غير متصل بالإنترنت. افتح صفحة سبق تحميلها.", {
+        status: 503,
+        headers: { "Content-Type": "text/plain; charset=utf-8" }
+      });
     }
   })());
 });
