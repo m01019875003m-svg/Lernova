@@ -147,8 +147,12 @@
     });
 
     const syncStatus = document.getElementById('syncStatus');
-    const showSyncStatus = () => { syncStatus.textContent = navigator.onLine ? 'حسابك متصل. تتم مزامنة التقدم عند توفر الاتصال.' : 'أنت دون اتصال. تقدمك محفوظ على هذا الجهاز.'; syncStatus.dataset.state = navigator.onLine ? 'ok' : 'offline'; };
-    window.addEventListener('online', showSyncStatus); window.addEventListener('offline', showSyncStatus); showSyncStatus();
+    const showSyncStatus = () => {
+      const state=navigator.onLine?(window.LernovaSync?.status||'local'):'offline';
+      const labels={synced:'تمت مزامنة تقدمك ✓',syncing:'جارٍ مزامنة تقدمك…',pending:'تعذّرت المزامنة الآن. تقدمك محفوظ على هذا الجهاز.',offline:'أنت دون اتصال. تقدمك محفوظ على هذا الجهاز.',local:'تقدمك محفوظ على هذا الجهاز.'};
+      syncStatus.textContent=labels[state]||labels.local;syncStatus.dataset.state=state;
+    };
+    window.addEventListener('online',showSyncStatus);window.addEventListener('offline',showSyncStatus);window.addEventListener('lernova:sync-status',showSyncStatus);showSyncStatus();
     const voiceStatus = document.getElementById('offlineVoiceStatus'), voiceButton = document.getElementById('testOfflineVoice');
     let germanVoice = null;
     function updateVoices() {
@@ -167,4 +171,5 @@
   <script src="../js/profile-ui.js"></script>
 </body>
 </html>
+
 
