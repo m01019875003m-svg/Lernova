@@ -15,18 +15,22 @@
       goal.value = String(clamp(store.get('dailyGoal', 5)));
       goal.addEventListener('change', save);
       document.querySelectorAll('.goal-preset').forEach(button => button.addEventListener('click', () => { goal.value = button.dataset.goal; save(); }));
-      window.addEventListener('lernova:daily-goal-updated', update); update();
+      window.addEventListener('lernova:daily-goal-updated', update);window.addEventListener('lernova:synced',()=>{goal.value=String(clamp(store.get('dailyGoal',5)));update()}); update();
     }
     document.getElementById('exportBackup')?.addEventListener('click', () => {
-      const data = Object.fromEntries(Object.keys(localStorage).filter(k => k.startsWith('lernova_')).map(k => [k, localStorage.getItem(k)]));
-      const url = URL.createObjectURL(new Blob([JSON.stringify({app:'Lernova',version:1,data}, null, 2)], {type:'application/json'}));
+      const keys=['known','review','xp','streak','lastActivity',...store.fields];
+      const data=Object.fromEntries(keys.map(k=>[k,store.get(k,null)]));
+      const url = URL.createObjectURL(new Blob([JSON.stringify({app:'Lernova',version:2,data}, null, 2)], {type:'application/json'}));
       const a = document.createElement('a'); a.href = url; a.download = 'lernova-backup.json'; a.click(); URL.revokeObjectURL(url);
     });
     document.getElementById('importBackup')?.addEventListener('change', async event => {
-      try { const file = event.target.files?.[0]; if (!file) return; const data = JSON.parse(await file.text()).data; if (!data || typeof data !== 'object') throw new Error();
-        Object.entries(data).filter(([k]) => k.startsWith('lernova_')).forEach(([k,v]) => localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v)));
+      try { const file = event.target.files?.[0]; if (!file) return; const backup=JSON.parse(await file.text()),data=backup.data;if(backup.app!=='Lernova'||!data||typeof data!=='object')throw new Error();
+        const allowed=new Set(['known','review','xp','streak','lastActivity',...store.fields]);
+        for(const [key,value] of Object.entries(data)){const k=key.replace(/^lernova_/,'');if(!allowed.has(k))continue;let v=value;if(backup.version===1&&typeof v==='string')v=JSON.parse(v);if(v!==null)store.set(k,v);}
+        try{await window.LernovaSync?.mergeLocal();}catch{}
         location.reload();
       } catch { alert('تعذر استيراد النسخة. تأكد من اختيار ملف Lernova صحيح.'); }
     });
   });
 })();
+
