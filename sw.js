@@ -6,7 +6,7 @@ const ASSETS = [
   "./", "./index.html", "./manifest.json",
   "./assets/lernova-icon.svg", "./assets/lernova-icon-192.png", "./assets/lernova-icon-512.png",
   "./css/main.css",
-  "./data/a1.js", "./data/grammar-a1.js", "./data/conversations-a1.js", "./data/coursebook-a1.js",
+  "./data/a1.js", "./data/grammar-a1.js", "./data/conversations-a1.js", "./data/coursebook-a1.js", "./data/reading-practice-a1.js",
   "./js/storage.js", "./js/core.js", "./js/app.js", "./js/words.js", "./js/review.js", "./js/mistakes.js",
   "./js/quiz.js", "./js/auth.js", "./js/sync.js", "./js/config.js", "./js/language.js",
   "./js/profile-ui.js", "./js/support.js", "./js/support-inbox.js", "./js/tools.js/tools.js",
